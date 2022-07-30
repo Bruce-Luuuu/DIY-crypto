@@ -34,10 +34,11 @@
 
 <img src="https://s1.ax1x.com/2022/07/30/vFAk8S.png" alt="vFAk8S.png"  width="700px" />
 
-又运行程序，Rho 方法在 7677s（约2小时）找到了 SM3 高 **64 bit** 的碰撞。将消息分别存入文件 `a64.txt` 和 `b64.txt` 中，通过命令行计算摘要值验证结果：
+再次运行程序使用 Rho 方法在 7677s（约2小时）找到了 SM3 高 **64 bit** 的碰撞。将消息分别存入文件 `a64.txt` 和 `b64.txt` 中，通过命令行计算摘要值验证结果：
 
 <img src="https://s1.ax1x.com/2022/07/30/vFAhPf.png" alt="vFAhPf.png" width="700px" />
 
 ### 参考引用
 
 Rho方法的原理参考 *Introduction of modern cryptography* 一书，代码实现上没有参考他人代码，按照自己的理解独立实现。
+
