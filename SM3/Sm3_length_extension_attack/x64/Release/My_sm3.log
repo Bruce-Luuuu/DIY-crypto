@@ -1,0 +1,8 @@
+﻿  main.cpp
+C:\Users\Bruce_Lu\Desktop\SM3\My_sm3\main.cpp(22,25): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+  正在生成代码
+  1 of 129 functions ( 0.8%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  My_sm3.vcxproj -> C:\Users\Bruce_Lu\Desktop\SM3\My_sm3\x64\Release\My_sm3.exe
