@@ -74,6 +74,10 @@
 
 ### 项目说明
 
+静态库，可以编译
+
+
+
 #### SM3 专题
 
 ##### 1. Implement the naïve birthday attack of reduced SM3
