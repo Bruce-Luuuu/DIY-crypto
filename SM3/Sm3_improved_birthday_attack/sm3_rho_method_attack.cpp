@@ -145,6 +145,7 @@ void FindCollision(int num_of_bit)
 
 int main()
 {
+	// 寻找高位64比特碰撞
 	FindCollision(64);
 	return 0;
 }

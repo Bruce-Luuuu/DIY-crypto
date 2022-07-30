@@ -122,6 +122,7 @@ void FindCollision(int num_of_bit)
 
 int main()
 {
+	// 寻找高位56比特碰撞
 	FindCollision(56);
 	return 0;
 }
