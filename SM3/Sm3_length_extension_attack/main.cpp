@@ -28,10 +28,26 @@ string get_msg() {
 	return res;
 }
 
+// 在已知 hash(M) 和 M 的长度的情形下添加 M1 伪造签名
 void SM3_fake(SM3_STATE* md, unsigned char buf[], int len, unsigned char hash[])
 {
 	SM3_process(md, buf, len);
-	SM3_done(md, hash);
+	
+	md->length += (MSG_LEN + 64) << 3;  // 增加消息长度
+	md->buf[md->curlen] = 0x80;    // 末尾加 '1'
+	md->curlen++;
+	for (int i = 56; i < 60; i++) {
+		md->buf[i] = 0;
+	}
+	// 在末尾添加消息长度的二进制表示
+	md->buf[63] = md->length & 0xff;
+	md->buf[62] = (md->length >> 8) & 0xff;
+	md->buf[61] = (md->length >> 16) & 0xff;
+	md->buf[60] = (md->length >> 24) & 0xff;
+
+	SM3_compress(md);
+	memcpy(hash, md->state, SM3_len / 8);     // 拷贝输出
+	BigEndian(hash, SM3_len / 8, hash);      //转换大小端
 }
 
 void show(uint8_t* array, int len) {
@@ -42,11 +58,11 @@ void show(uint8_t* array, int len) {
 }
 
 int main() {
-	/* 验证 SM3 程序正确性
+	/* 验证 SM3 程序正确性 */
 	if (SM3_SelfTest()) {
 		cout << "SM3 is not correct";
 		exit(0);
-	} */
+	} 
 	uint8_t dgst_M[SM3_OUTPUT_LEN];
 	uint8_t dgst_M_pad_M1[SM3_OUTPUT_LEN];
 	uint8_t dgst_fake[SM3_OUTPUT_LEN];
@@ -54,63 +70,34 @@ int main() {
 	uint8_t M1[MSG_LEN];
 	uint8_t M_pad_M1[64 + MSG_LEN];
 	
-	memcpy(M, get_msg().c_str(), MSG_LEN);
-	SM3_256(M, MSG_LEN, dgst_M);
+	memcpy(M, get_msg().c_str(), MSG_LEN); // 随机生成消息 M
+	SM3_256(M, MSG_LEN, dgst_M); // 计算 M 的哈希值 dgst_M
 	
-	show(M, MSG_LEN);
-	show(dgst_M, SM3_OUTPUT_LEN);
-	
+	cout << "M:\n";  show(M, MSG_LEN);  // 输出信息
+	cout << "hash(M):\n";  show(dgst_M, SM3_OUTPUT_LEN);
 	cout << "-------------------------------------------------------------------------\n";
 
 	SM3_STATE md;
 	md.curlen = md.length = 0;
-	// 大小端？memcpy(md.state, dgst_M, 32);
-	///*
-	memcpy(md.state, dgst_M, 4);
-	memcpy(md.state + 1, dgst_M + 4, 4);
-	memcpy(md.state + 2, dgst_M + 8, 4);
-	memcpy(md.state + 3, dgst_M + 12, 4);
-	memcpy(md.state + 4, dgst_M + 16, 4);
-	memcpy(md.state + 5, dgst_M + 20, 4);
-	memcpy(md.state + 6, dgst_M + 24, 4);
-	memcpy(md.state + 7, dgst_M + 28, 4);
-	//*/
-	/*
-	memcpy(md.state, dgst_M + 28, 4);
-	memcpy(md.state + 1, dgst_M + 24, 4);
-	memcpy(md.state + 2, dgst_M + 20, 4);
-	memcpy(md.state + 3, dgst_M + 16, 4);
-	memcpy(md.state + 4, dgst_M + 12, 4);
-	memcpy(md.state + 5, dgst_M + 8, 4);
-	memcpy(md.state + 6, dgst_M + 4, 4);
-	memcpy(md.state + 7, dgst_M, 4);
-	*/
-	/*
-	md.state[0] = SM3_IVA; 
-	md.state[1] = SM3_IVB;
-	md.state[2] = SM3_IVC; 
-	md.state[3] = SM3_IVD;
-	md.state[4] = SM3_IVE; 
-	md.state[5] = SM3_IVF;
-	md.state[6] = SM3_IVG; 
-	md.state[7] = SM3_IVH;
-	*/
+	
+	BigEndian(dgst_M, 32, dgst_M); // 一定要注意大小端问题！
+	memcpy(md.state, dgst_M, 32); // 利用hash(M)的值作为IV
 
-	memcpy(M1, get_msg().c_str(), MSG_LEN);
-	SM3_fake(&md, M1, MSG_LEN, dgst_fake);
+	memcpy(M1, get_msg().c_str(), MSG_LEN);  // 随机生成消息 M1(现实中这里是伪造的消息 M1)
+	SM3_fake(&md, M1, MSG_LEN, dgst_fake);   // 伪造哈希值
 
-	show(M1, MSG_LEN);
-	show(dgst_fake, SM3_OUTPUT_LEN);
-
-	// 计算 M_pad_M1 的哈希值验证是否伪造成功
+	cout << "M1:\n";  show(M1, MSG_LEN);
+	cout << "hash(M1) （IV是hash(M)）:\n";  show(dgst_fake, SM3_OUTPUT_LEN);
 	cout << "-------------------------------------------------------------------------\n";
+
+	// 计算 M_pad_M1 对应的正确哈希值，以验证是否伪造成功，先构造消息 M+pad+M1
 	memcpy(M_pad_M1, M, MSG_LEN);
 	// 添加 padding
 	M_pad_M1[55] = 0x80;
 	for (int i = 56; i < 60; i++) {
 		M_pad_M1[i] = 0;
 	}
-	uint32_t length = 55;
+	uint32_t length = 55 << 3; // 长度单位是bit！ 不是字节！
 	M_pad_M1[63] = length & 0xff;
 	M_pad_M1[62] = (length >> 8) & 0xff;
 	M_pad_M1[61] = (length >> 16) & 0xff;
@@ -119,7 +106,7 @@ int main() {
 	memcpy(M_pad_M1+64, M1, MSG_LEN);
 	SM3_256(M_pad_M1, 64+MSG_LEN, dgst_M_pad_M1);
 
-	show(M_pad_M1, 64+MSG_LEN);
-	show(dgst_M_pad_M1, SM3_OUTPUT_LEN);
+	cout << "M||pad||M1:\n";  show(M_pad_M1, 64+MSG_LEN); // 输出结果与伪造值进行比对
+	cout << "hash(M||pad||M1):\n";  show(dgst_M_pad_M1, SM3_OUTPUT_LEN);
 	return 0;
 }

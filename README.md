@@ -9,26 +9,66 @@
 
 ### 项目清单
 
-- SM3 专题
-  - Implement the naïve birthday attack of reduced SM3
-  - Implement the Rho method of reduced SM3
-  - Implement length extension attack for SM3, SHA256, etc.
-  - Do your best to optimize SM3 implementation (software)
-  - Implement Merkle Tree following RFC6962
-- SM4 专题
-  - Do your best to optimize SM4 implementation (software)
+#### SM3 专题
 
-- SM2 专题
-  - Report on the application of this deduce technique in Ethereum with ECDSA
-  - Implement sm2 with RFC6979
-  - Verify the above pitfalls with proof-of-concept code
-  - Implement the above ECMH scheme
-  - Implement a PGP scheme with SM2
-  - implement sm2 2P sign with real network communication
-  - implement sm2 2P decrypt with real network communication
-  - PoC impl of the scheme, or do implement analysis by Google
+- [x] Implement the naïve birthday attack of reduced SM3 
 
-- Bitcoin 专题
+- [x] Implement the Rho method of reduced SM3
+
+- [x] Implement length extension attack for SM3, SHA256, etc.
+
+- [ ] Do your best to optimize SM3 implementation (software)
+
+- [ ] Implement Merkle Tree following RFC6962
+
+#### SM4 专题
+
+- [ ] Do your best to optimize SM4 implementation (software)
+
+#### SM2 专题
+
+- [x] Report on the application of this deduce technique in Ethereum with ECDSA
+
+- [ ] Implement sm2 with RFC6979
+
+- [ ] Verify the above pitfalls with proof-of-concept code
+
+- [ ] Implement the above ECMH scheme
+
+- [ ] Implement a PGP scheme with SM2
+
+- [ ] Implement sm2 2P sign with real network communication
+
+- [ ] Implement sm2 2P decrypt with real network communication
+
+- [ ] PoC impl of the scheme, or do implement analysis by Google
+
+#### Bitcoin 专题
+
+- [ ] Send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
+- [ ] Forge a signature to pretend that you are Satoshi
+
+#### Ethernet 专题
+
+- [ ] Research report on MPT
+
+#### Real world cryptanalyses 专题
+
+- [ ] Find a key with hash value `sdu_cst_20220610` under a message composed of *your name* followed by *your student ID*. For example, “*San Zhan 202000460001*”.
+- [ ] Find a 64-byte message under some k fulfilling that their hash value is symmetrical
+
+#### Real world zk-SNARKs 专题
+
+- [ ] Project Idea：
+
+  - Write a circuit to prove that your CET6 grade is larger than 425.
+    a. Your gradeinfo is like(cn_id, grade, year, sig_by_moe). These grades are published as commitments onchain by MoE.
+    b. When you got an interview from an employer,you can prove to them that you have passed the exam without letting them know the exact grade.
+
+  - The commitment scheme used by MoE is SHA256-bases.
+    a. commit=SHA256(cn_id,grade,sig_by_moe,r)
+
+
 
 
 
@@ -135,7 +175,3 @@
 - **运行结果：**
 
 - **参考引用：**
-
-
-
-【说明】因为刚开始不会用 `git`，一直通过 `github` 网页端提交更新项目，后来在提交前才学会 `git` 的使用方法，但是由于本地仓库和远程仓库都已经存在文件，建立连接时一直出问题（也有对 git 命令不熟悉的缘故 orz），所以全部文件的提交时间都比较近，希望显示的提交时间能够不影响成绩。

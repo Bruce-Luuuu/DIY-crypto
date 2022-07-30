@@ -38,6 +38,12 @@ void CF(unsigned int W[], unsigned int W1[], unsigned int V[])
     //初始化寄存器，设置 ABCDEFGH=V0
     A = V[0]; B = V[1]; C = V[2]; D = V[3]; E = V[4]; F = V[5]; G = V[6]; H = V[7];
 
+    /*
+    for (int i = 0; i < 8; i++) {
+        printf("%08x ", V[i]);
+    }printf("\n");
+    */
+
     for (j = 0; j <= 63; j++) {
         //生成中间变量 SS1
         if (j == 0) T = SM3_T1;
@@ -159,6 +165,7 @@ void SM3_done(SM3_STATE* md, unsigned char hash[])
     md->buf[62] = (md->length >> 8) & 0xff;
     md->buf[61] = (md->length >> 16) & 0xff;
     md->buf[60] = (md->length >> 24) & 0xff;
+
     SM3_compress(md);
     memcpy(hash, md->state, SM3_len / 8);     // 拷贝输出
     BigEndian(hash, SM3_len / 8, hash);      //转换大小端
