@@ -15,9 +15,19 @@
   - Implement length extension attack for SM3, SHA256, etc.
   - Do your best to optimize SM3 implementation (software)
   - Implement Merkle Tree following RFC6962
-  - Try to Implement .....
 - SM4 专题
+  - Do your best to optimize SM4 implementation (software)
+
 - SM2 专题
+  - Report on the application of this deduce technique in Ethereum with ECDSA
+  - Implement sm2 with RFC6979
+  - Verify the above pitfalls with proof-of-concept code
+  - Implement the above ECMH scheme
+  - Implement a PGP scheme with SM2
+  - implement sm2 2P sign with real network communication
+  - implement sm2 2P decrypt with real network communication
+  - PoC impl of the scheme, or do implement analysis by Google
+
 - Bitcoin 专题
 
 
