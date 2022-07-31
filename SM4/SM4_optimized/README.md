@@ -32,15 +32,18 @@
 
 为了提升效率，可以将 $S$ 盒与线性变换 $L$ 合并，通过 
 
-$F(x)=L(S(x_0), S(x_1), S(x_2), S(x_3)) \\
+$F(x)=L(S(x_0), S(x_1), S(x_2), S(x_3))
 =L(S(x_0)\mathtt{<<<}24)⊕L(S(x_1)\mathtt{<<<}16)⊕L(S(x_2)\mathtt{<<<}8)⊕L(S(x_3))$
 
 可以定义 4 个 8 进 32 出的 T-table，满足：
 
-$\mathtt{T-table_0}(x)=L(S(x)\mathtt{<<<}24)\\
-\mathtt{T-table_1}(x)=L(S(x)\mathtt{<<<}16)\\
-\mathtt{T-table_2}(x)=L(S(x)\mathtt{<<<}8)\\
-\mathtt{T-table_3}(x)=L(S(x))$
+$\mathtt{T-table_0}(x)=L(S(x)\mathtt{<<<}24)$
+
+$\mathtt{T-table_1}(x)=L(S(x)\mathtt{<<<}16)$
+
+$\mathtt{T-table_2}(x)=L(S(x)\mathtt{<<<}8)$
+
+$\mathtt{T-table_3}(x)=L(S(x))$
 
 这样每次可以通过查表节省循环移位操作，此优化方案的基本思想是空间换时间。
 
