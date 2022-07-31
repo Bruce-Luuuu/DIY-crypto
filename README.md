@@ -7,7 +7,7 @@
 
 git 账户名称：`Bruce_Lu`
 
-个人贡献：完成下面清单中勾选的 7 个项目
+个人贡献：完成下面清单中勾选的 5 个项目
 
 ### 项目清单
 
@@ -21,7 +21,7 @@ git 账户名称：`Bruce_Lu`
 
 - [ ] Do your best to optimize SM3 implementation (software)
 
-- [x] Implement Merkle Tree following RFC6962
+- [ ] Implement Merkle Tree following RFC6962
 
 #### SM4 专题
 
@@ -52,7 +52,7 @@ git 账户名称：`Bruce_Lu`
 
 #### Ethernet 专题
 
-- [x] Research report on MPT
+- [ ] Research report on MPT
 
 #### Real world cryptanalyses 专题
 
@@ -92,19 +92,11 @@ git 账户名称：`Bruce_Lu`
 
 相关文件位置：`DIY-crypto/SM3/Sm3_length_extension_attack` 
 
-#### 4. Implement Merkle Tree following RFC6962
-
-相关文件位置：`DIY-crypto/SM3/Merkle_tree` 
-
-#### 5. Do your best to optimize SM4 implementation (software)
+#### 4. Do your best to optimize SM4 implementation (software)
 
 相关文件位置：`DIY-crypto/SM4/SM4_optimized` 
 
-#### 6. Report on the application of this deduce technique in Ethereum with ECDSA
+#### 5. Report on the application of this deduce technique in Ethereum with ECDSA
 
 相关文件位置：`DIY-crypto/SM2/report_on_deduce_technique`
-
-#### 7. Research report on MPT
-
-相关文件位置：`DIY-crypto/ETHERNET/MPT_research`
 
