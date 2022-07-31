@@ -1,5 +1,7 @@
 #include "SM4.h"
 #include <immintrin.h>
+#include <cstdio>
+#include <cstring>
 
 #define rotl32(x, n) ((x << n) | x >> (32 - n))
 #define MM256_PACK0_EPI32(a, b, c, d) _mm256_unpacklo_epi64(_mm256_unpacklo_epi32(a, b), _mm256_unpacklo_epi32(c, d))
@@ -262,4 +264,28 @@ void _SM4_do(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int enc) {
     _mm256_storeu_si256((__m256i*)out + 1, MM256_PACK1_EPI32(X[3], X[2], X[1], X[0]));
     _mm256_storeu_si256((__m256i*)out + 2, MM256_PACK2_EPI32(X[3], X[2], X[1], X[0]));
     _mm256_storeu_si256((__m256i*)out + 3, MM256_PACK3_EPI32(X[3], X[2], X[1], X[0]));
+}
+
+bool SelfTest() {
+    unsigned char key[16 * 8] = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10 };
+    unsigned char in[16 * 8] = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10 };
+    unsigned char out[16 * 8] = { 0 };
+    unsigned char in_dec[16 * 8] = { 0 };
+    unsigned char res[16 * 8] = {
+        0x68, 0x1e, 0xdf, 0x34, 0xd2, 0x06, 0x96, 0x5e, 0x86, 0xb3, 0xe9, 0x4f, 0x53, 0x6e, 0x42, 0x46,
+        0x26, 0x77, 0xf4, 0x6b, 0x09, 0xc1, 0x22, 0xcc, 0x97, 0x55, 0x33, 0x10, 0x5b, 0xd4, 0xa2, 0x2a
+    };
+    SM4_Key sm4_key = (uint32_t*)malloc(32 * sizeof(uint32_t));
+    // malloc …Í«Îø’º‰ ß∞‹
+    if (sm4_key == NULL) {
+        printf("malloc failed.\n");
+        return false;
+    }
+    SM4_KeyInit(key, sm4_key);
+    SM4_Encrypt(in, out, sm4_key);
+    SM4_Decrypt(out, in_dec, sm4_key);
+    SM4_KeyDelete(sm4_key);
+
+    if (!memcmp(out, res, 32) && !memcmp(in, in_dec, 32)) return true;
+    else return false;
 }

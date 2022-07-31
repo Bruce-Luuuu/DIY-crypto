@@ -2,46 +2,49 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include <random>
+#include <ctime>
+#include <string>
 using namespace std;
 
+char CHAR_SET[63] = {
+    '0','1','2','3','4','5','6','7','8','9',
+    'A','B','C','D','E','F','G','H','I','J',
+    'K','L','M','N','O','P','Q','R','S','T',
+    'U','V','W','X','Y','Z','a','b','c','d',
+    'e','f','g','h','i','j','k','l','m','n',
+    'o','p','q','r','s','t','u','v','w','x',
+    'y','z','\0'
+};
+
+string GenMsg(string filename, uint32_t len) {
+    static mt19937 rnd(time(0));
+    static uniform_int_distribution<> range(0, 61);
+    string res = "";
+    for (uint32_t i = 0; i < len; i++) {
+        res += CHAR_SET[range(rnd)];
+    }
+    return res;
+}
+
+
 int main() {
-    // 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
-    unsigned char key[16 * 8] = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98,
-                                 0x76, 0x54, 0x32, 0x10 };
-    // 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
-    // 00 00 ... 00
-    unsigned char in[16 * 8] = { 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
-                                0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10 };
+    if (SelfTest() == false) {
+        cout << "SM4 implementation is not correct\n";
+        exit(0);
+    }
+    unsigned char key[16 * 8] = { 0 };
+    unsigned char in[16 * 8] = { 0 };
     SM4_Key sm4_key = (uint32_t*)malloc(32 * sizeof(uint32_t));
     // malloc ÉêÇë¿Õ¼äÊ§°Ü
     if (sm4_key == NULL) {
         cout << "malloc failed.\n";
     }
+
     SM4_KeyInit(key, sm4_key);
-
     SM4_Encrypt(in, in, sm4_key);
-    // 68 1e df 34 d2 06 96 5e 86 b3 e9 4f 53 6e 42 46
-    // 26 77 f4 6b 09 c1 22 cc 97 55 33 10 5b d4 a2 2a
-    // 26 ...
-    printf("C:\n");
-    for (int j = 0; j < 8; j++) {
-        for (int i = 0; i < 16; i++) {
-            printf("%02x ", in[i + 16 * j]);
-        }
-        printf("\n");
-    }
-
-    printf("P:\n");
     SM4_Decrypt(in, in, sm4_key);
-    // 01 23 45 67 89 ab cd ef fe dc ba 98 76 54 32 10
-    // 00 00 ... 00
-    for (int j = 0; j < 8; j++) {
-        for (int i = 0; i < 16; i++) {
-            printf("%02x ", in[i + 16 * j]);
-        }
-        printf("\n");
-    }
-
     SM4_KeyDelete(sm4_key);
+
     return 0;
 }

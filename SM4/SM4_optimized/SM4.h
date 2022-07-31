@@ -16,3 +16,5 @@ void SM4_Decrypt(uint8_t* ciphertext, uint8_t* plaintext, SM4_Key sm4_key);
 
 // ÊÍ·Å SM4 ÂÖÃÜÔ¿ÄÚ´æ¿Õ¼ä
 void SM4_KeyDelete(SM4_Key sm4_key);
+
+bool SelfTest();
