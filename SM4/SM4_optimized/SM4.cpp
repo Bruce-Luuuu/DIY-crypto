@@ -207,19 +207,19 @@ void SM4_KeyDelete(SM4_Key sm4_key) {
     free(sm4_key); 
 }
 
-// 输入、输出均为 128*8 bit，enc=0代表加密 1表示解密
-static void _SM4_do(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int enc);
+// 输入、输出均为 128*8 bit，mode=0代表加密 1表示解密
+static void SM4_process(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int mode);
 
 void SM4_Encrypt(uint8_t* in, uint8_t* out, SM4_Key sm4_key) {
-    _SM4_do(in, out, sm4_key, 0);
+    SM4_process(in, out, sm4_key, 0);
 }
 void SM4_Decrypt(uint8_t* in, uint8_t* out, SM4_Key sm4_key) {
-    _SM4_do(in, out, sm4_key, 1);
+    SM4_process(in, out, sm4_key, 1);
 }
 
-void _SM4_do(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int enc) {
-    __m256i X[4], tmp[4], Mask;
-    Mask = _mm256_set1_epi32(0xFF);
+void SM4_process(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int mode) {
+    __m256i X[4], tmp[4], mask;
+    mask = _mm256_set1_epi32(0xFF);
     //加载数据
     tmp[0] = _mm256_loadu_si256((const __m256i*)in + 0);
     tmp[1] = _mm256_loadu_si256((const __m256i*)in + 1);
@@ -238,16 +238,16 @@ void _SM4_do(uint8_t* in, uint8_t* out, SM4_Key sm4_key, int enc) {
     X[3] = _mm256_shuffle_epi8(X[3], vindex);
     // 32轮迭代
     for (int i = 0; i < 32; i++) {
-        __m256i k = _mm256_set1_epi32((enc == 0 ? sm4_key[i] : sm4_key[31 - i]));
+        __m256i k = _mm256_set1_epi32((mode == 0 ? sm4_key[i] : sm4_key[31 - i]));
         tmp[0] = _mm256_xor_si256(_mm256_xor_si256(X[1], X[2]), _mm256_xor_si256(X[3], k));
         //查表
-        tmp[1] = _mm256_xor_si256(X[0], _mm256_i32gather_epi32((const int*)T_table0, _mm256_and_si256(tmp[0], Mask), 4));
+        tmp[1] = _mm256_xor_si256(X[0], _mm256_i32gather_epi32((const int*)T_table0, _mm256_and_si256(tmp[0], mask), 4));
         tmp[0] = _mm256_srli_epi32(tmp[0], 8);
-        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table1, _mm256_and_si256(tmp[0], Mask), 4));
+        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table1, _mm256_and_si256(tmp[0], mask), 4));
         tmp[0] = _mm256_srli_epi32(tmp[0], 8);
-        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table2, _mm256_and_si256(tmp[0], Mask), 4));
+        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table2, _mm256_and_si256(tmp[0], mask), 4));
         tmp[0] = _mm256_srli_epi32(tmp[0], 8);
-        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table3, _mm256_and_si256(tmp[0], Mask), 4));
+        tmp[1] = _mm256_xor_si256(tmp[1], _mm256_i32gather_epi32((const int*)T_table3, _mm256_and_si256(tmp[0], mask), 4));
 
         X[0] = X[1];
         X[1] = X[2];
@@ -276,7 +276,7 @@ bool SelfTest() {
         0x26, 0x77, 0xf4, 0x6b, 0x09, 0xc1, 0x22, 0xcc, 0x97, 0x55, 0x33, 0x10, 0x5b, 0xd4, 0xa2, 0x2a
     };
     SM4_Key sm4_key = (uint32_t*)malloc(32 * sizeof(uint32_t));
-    // malloc 申请空间失败
+
     if (sm4_key == NULL) {
         printf("malloc failed.\n");
         return false;
