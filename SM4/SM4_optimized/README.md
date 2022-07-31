@@ -28,11 +28,11 @@
 
 轮函数 $F$ 是由非线性变换 $\tau$ 和线性变换 $L$ 组成，即 $F(x)=L(\tau(X))$，输入输出都是 32 比特字。
 
-其中 $\tau$ 又是由 4 个并行的 8 进 8 出 $S$ 盒组成，将 32 比特字分为 4 个字节并行过 $S$ 盒，可以表示为 $\tau(X)=(S(x_1),S(x_2),S(x_3),S(x_4))$ ；线性变换 $L$ 可以表示为 $L(B)=B~\oplus~(B~\mathtt{<<<}~2)~\oplus~(B~\mathtt{<<<}~10)~\oplus~(B~\mathtt{<<<}~18)~\oplus~(B~\mathtt{<<<}~24)  $.
+其中 $\tau$ 又是由 4 个并行的 8 进 8 出 $S$ 盒组成，将 32 比特字分为 4 个字节并行过 $S$ 盒，可以表示为 $\tau(X)=(S(x_1),S(x_2),S(x_3),S(x_4))$ ；线性变换 $L$ 可以表示为 $L(B)=B \oplus (B \mathtt{<<<} 2) \oplus (B \mathtt{<<<} 10) \oplus (B \mathtt{<<<} 18) \oplus (B \mathtt{<<<} 24)  $.
 
 为了提升效率，可以将 $S$ 盒与线性变换 $L$ 合并，通过 
 $$
-F(x)=L(S(x_0),~S(x_1),~S(x_2),~S(x_3)) \\
+F(x)=L(S(x_0), S(x_1), S(x_2), S(x_3)) \\
 =L(S(x_0)\mathtt{<<<}24)⊕L(S(x_1)\mathtt{<<<}16)⊕L(S(x_2)\mathtt{<<<}8)⊕L(S(x_3))
 $$
 可以定义 4 个 8 进 32 出的 T-table，满足：
@@ -42,8 +42,6 @@ T1(x)=L(S(x)<<16)\\
 T2(x)=L(S(x)<<8)\\
 T3(x)=L(S(x))
 $$
-
-
 
 
 2、SIMD
@@ -60,7 +58,7 @@ $$
 
 ### 运行结果
 
-<img src="https://s1.ax1x.com/2022/07/31/vF6BYd.png" alt="vF6BYd.png" width="650px;" />
+<img src="https://s1.ax1x.com/2022/07/31/vF6BYd.png" alt="vF6BYd.png" width="580px;" />
 
 效率的两个指标：每秒能够加密内存中多少数据（效率高低不光与实现，还与CPU主频有关系）；加密一个字节Bytes需要多少时钟周期（受CPU架构影响小）
 
